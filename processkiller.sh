@@ -6,8 +6,6 @@ set -o pipefail
 set -o errexit
 set -o nounset
 
-# readonly work_dir=$(dirname "$(readlink --canonicalize-existing "${0}")")
-
 show_help() {
 cat <<HELP_TEXT
 
@@ -52,7 +50,7 @@ kill_process() {
     local process
     local pid
 
-    while read process; do
+    while read -r process; do
         pid=$(awk '{print $2}' <<< "${process}")
         if ! kill_p "${pid}"; then
             printf "Could not kill '%s' with %d pid\n" "${process_name}" "${pid}"
@@ -66,8 +64,6 @@ readonly opts=$(getopt -o ih --long ignore-case,help -- "${@}" 2> /dev/null)
 
 eval set -- "${opts}"
 ignore_case_flag=0
-stlen_flag=0
-count_flag=0
 
 while true; do
     case "${1}" in
